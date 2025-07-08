@@ -1,6 +1,7 @@
 package ch.makery.address
 
 import ch.makery.address.model.Person
+import ch.makery.address.view.PersonEditDialogController
 import javafx.fxml.FXMLLoader
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
@@ -9,6 +10,7 @@ import scalafx.Includes.*
 import javafx.scene as jfxs
 import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
+import scalafx.stage.{Modality, Stage}
 
 object MainApp extends JFXApp3:
 
@@ -78,7 +80,27 @@ object MainApp extends JFXApp3:
     }
     stringA.value ="world"
 
-    /**anymouse function
+
+  def showPersonEditDialog(person: Person): Boolean =
+    val resource = getClass.getResource("view/PersonEditDialog.fxml")
+    val loader = new FXMLLoader(resource)
+    loader.load();
+    val roots2 = loader.getRoot[jfxs.Parent] // to get ui object and assign into roots2, load the anchor pane, parent is like container like grid pane
+    val control = loader.getController[PersonEditDialogController] // get the controller object
+
+    val dialog = new Stage():
+      initModality(Modality.ApplicationModal) //the dialog stay on top of the object
+      initOwner(stage)
+      scene = new Scene:
+        root = roots2
+
+    control.dialogStage = dialog
+    control.person = person
+    dialog.showAndWait() // when this is executed the window will pop out, can be declare as blocking core, it will block your next line
+    control.okClicked
+
+
+/**anymouse function
     val func1 = (a: Int) =>
       a + 1
       println(func1(8))
